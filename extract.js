@@ -34,7 +34,8 @@ Promise.all([
     fs.writeFileSync(serfile, JSON.stringify(serialized, null, 4), 'utf-8');
     if (process.argv.filter(a => a == '--nogit').length == 0 && 
             fs.existsSync('./.git') && 
-            fs.lstatSync('./.git').isDirectory()) {
+            fs.lstatSync('./.git').isDirectory() &&
+            childproc.execSync('git status -s').indexOf(serfile) >= 0) {
         childproc.execSync('git add ' + serfile);
         childproc.execSync('git commit -m "Update shop content"');
     }
