@@ -1,0 +1,1 @@
+module.exports = 'contents/shop_content.json';

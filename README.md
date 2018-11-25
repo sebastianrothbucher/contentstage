@@ -17,6 +17,12 @@ Export (*extract*) page and category contents of a magento shop and re-import (*
 * (so far) show an error when update timestamp bigger (pot. conflict)
 * create pages that don't exist yet
 
+## Options / configuration
+
+* ```--nogit``` does not check in or stash
+* database connection see ```connection.js``` 
+* to change the filename of the extracted contents, see ```serfile.js```
+
 ## potential extensions
 
 * show diff on detected conflict

@@ -1,8 +1,9 @@
 const fs = require('fs');
 const childproc = require('child_process');
 const mysql = require('mysql');
+const serfile = require('./serfile');
 
-console.log("Exporting Page & Category content");
+console.log("Extracting Page & Category content");
 const connection = mysql.createConnection(require('./connection'));
 let pageres = new Promise((resolve, rejectt) => connection.query(
         "select p.identifier as p_identifier, s.code as s_code, p.title as p_title, " + 
@@ -24,12 +25,12 @@ let success = false;
 Promise.all([
     pageres.then(res => {
         res.forEach(r => r.p_update_time = (r.p_update_time ? r.p_update_time.getTime() : null)); // unix ts    
+        res.forEach(r => r.p_content = r.p_content.split('\n')); // content as an array with one per line for better diff
         serialized.pages = res;
     }),
     // TODO: same for categories
 ]).then(() => {
-    // TODO: save 2 file in ./contents + invoke git (if -d .git)
-    const serfile = './contents/shop_content.json';
+    // save 2 file in ./contents + invoke git (if -d .git)
     fs.writeFileSync(serfile, JSON.stringify(serialized, null, 4), 'utf-8');
     if (process.argv.filter(a => a == '--nogit').length == 0 && 
             fs.existsSync('./.git') && 
