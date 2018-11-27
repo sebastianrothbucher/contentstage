@@ -3,9 +3,11 @@ const childproc = require('child_process');
 const mysql = require('mysql');
 const serfile = require('./serfile');
 
+const fn = (process) => { // (for test)
+
 console.log("Extracting Page & Category content");
 const connection = mysql.createConnection(require('./connection'));
-let pageres = new Promise((resolve, rejectt) => connection.query(
+let pageres = new Promise((resolve, reject) => connection.query(
         "select p.identifier as p_identifier, s.code as s_code, p.title as p_title, " + 
         "p.page_layout as p_page_layout, p.content_heading as p_content_heading, " + 
         "p.content as p_content, p.update_time as p_update_time, p.is_active as p_is_active " + 
@@ -22,7 +24,7 @@ let pageres = new Promise((resolve, rejectt) => connection.query(
 
 let serialized = {};
 let success = false;
-Promise.all([
+return Promise.all([
     pageres.then(res => {
         res.forEach(r => r.p_update_time = (r.p_update_time ? r.p_update_time.getTime() : null)); // unix ts    
         res.forEach(r => r.p_content = r.p_content.split('\n')); // content as an array with one per line for better diff
@@ -49,3 +51,6 @@ Promise.all([
         process.exit(1);
     }
 });
+
+}; // (end for test)
+typeof(expect) === 'function' ? module.exports = fn : fn(process);
