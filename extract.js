@@ -53,4 +53,4 @@ return Promise.all([
 });
 
 }; // (end for test)
-typeof(expect) === 'function' ? module.exports = fn : fn(process);
+typeof(jest) === 'object' ? module.exports = fn : fn(process);
